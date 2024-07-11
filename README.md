@@ -16,7 +16,7 @@ You and your group will use everything you’ve learned over the past six module
 
 * Use a CSS framework other than Bootstrap. - Bulma
 
-* Be deployed to GitHub Pages.
+* Be deployed to GitHub Pages. - Done
 
 * Be interactive (i.e., accept and respond to user input).
 
