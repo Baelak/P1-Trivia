@@ -1,4 +1,4 @@
-Hosted URL Link: 
+Hosted URL Link: https://baelak.github.io/P1-Trivia/
 
 # 07 Project 1: Interactive Front-End Application
 
