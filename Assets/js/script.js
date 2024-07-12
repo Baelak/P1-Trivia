@@ -1,4 +1,14 @@
+function showModal(question, answer) {
+  const modal = document.getElementById('trivia-modal');
+  modal.classList.add('is-active');
+  document.getElementById('modal-content').innerText = `Question: ${question}\nAnswer: ${answer}`;
+}
+
+
 document.addEventListener("DOMContentLoaded", function() {
+
+  
+
     fetch('https://opentdb.com/api_category.php')
       .then(response => response.json())
       .then(data => {
@@ -36,11 +46,7 @@ document.addEventListener("DOMContentLoaded", function() {
       `).join('');
     }
   
-    function showModal(question, answer) {
-      const modal = document.getElementById('trivia-modal');
-      modal.classList.add('is-active');
-      document.getElementById('modal-content').innerText = `Question: ${question}\nAnswer: ${answer}`;
-    }
+    
   
     function closeModal() {
       const modal = document.getElementById('trivia-modal');
