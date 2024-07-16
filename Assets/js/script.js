@@ -72,6 +72,7 @@ document.addEventListener('DOMContentLoaded', function() {
       showAnswerButton.disabled = true;
       nextButton.disabled = true;
     }
+<<<<<<< HEAD
   }
 
   function getAnswersHtml(question) {
@@ -95,6 +96,24 @@ document.addEventListener('DOMContentLoaded', function() {
           False
         </label>
       `;
+=======
+  
+    function displayTriviaQuestions(questions) {
+      const triviaResult = document.getElementById('trivia-result');
+      questions.forEach((question, index) => {
+        triviaResult.innerHTML += `<div><p><strong>Question ${index + 1}:</strong> ${question.question}</p>`;
+
+          question.incorrect_answers.forEach(function(wrongAnswer){
+            triviaResult.innerHTML += `<div><label>${wrongAnswer}</label><input type="radio" name="answers" value="${wrongAnswer}" /></div>`;
+          });
+
+          triviaResult.innerHTML += `<div><label>${question.correct_answer}</label><input type="radio" name="answers" value="${question.correct_answer}" /></div>`;
+
+          //<p><strong>Answer:</strong> ${question.correct_answer}</p>
+          triviaResult.innerHTML += `<button class="button is-info" onclick="showModal('${question.question}', '${question.correct_answer}')">More Info</button>
+        </div>`});
+
+>>>>>>> fde62017b1f22b35a1f2b04a3790c017474d21cf
     }
   }
 
