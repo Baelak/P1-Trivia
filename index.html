@@ -3,51 +3,40 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TriviaQuizPro</title>
+  <title>Quiz App</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
-  <link rel="stylesheet" href="styles.css">
-  <script src="./Assets/js/script.js"></script>
+  <link rel="stylesheet" href="./Assets/css/style.css">
 </head>
 <body>
-  <!-- Navbar -->
-  <nav class="navbar" role="navigation" aria-label="main navigation">
-    <div class="navbar-brand">
-      <a class="navbar-item" href="#">TriviaQuizPro</a>
-    </div>
-  </nav>
-
-  <!-- Main Section -->
-  <section class="section">
-    <div class="container">
-      <h1 class="title">Trivia Quiz</h1>
-      <div class="field">
-        <label class="label">Search for Trivia Questions</label>
-        <div class="control">
-          <div class="select">
-            <select id="category-select">
-              <!-- Categories will be populated here -->
-            </select>
-          </div>
-        </div>
-        <div class="control mt-2">
-          <button id="search-button" class="button is-primary">Get Questions</button>
-        </div>
-      </div>
-      <div id="trivia-result" class="box">
-        <!-- Trivia questions will be displayed here -->
+  <section class="hero is-primary">
+    <div class="hero-body">
+      <div class="container">
+        <h1 class="title">Quiz App</h1>
+        <h2 class="subtitle">Test your knowledge!</h2>
       </div>
     </div>
   </section>
 
-  <!-- Modal -->
-  <div class="modal" id="trivia-modal">
-    <div class="modal-background" id="modal-background"></div>
-    <div class="modal-content">
-      <div class="box">
-        <p id="modal-content">Modal Content</p>
+  <section class="section">
+    <div class="container">
+      <div class="field">
+        <label class="label">Select Category</label>
+        <div class="control">
+          <div class="select">
+            <select id="category-select">
+              <option value="any">Any Category</option>
+              <!-- Categories will be populated here by JavaScript -->
+            </select>
+          </div>
+        </div>
+        <button id="start-quiz-button" class="button is-primary">Start Quiz</button>
       </div>
+      <div id="quiz-container" class="content is-hidden"></div>
+      <button id="show-answer-button" class="button is-info is-hidden">Show Answer</button>
+      <button id="next-button" class="button is-primary is-hidden">Next Question</button>
     </div>
-    <button class="modal-close is-large" aria-label="close" id="modal-close"></button>
-  </div>
+  </section>
+
+  <script src="./Assets/js/script.js"></script>
 </body>
 </html>

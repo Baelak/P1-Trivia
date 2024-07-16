@@ -1,59 +1,128 @@
-function showModal(question, answer) {
-  const modal = document.getElementById('trivia-modal');
-  modal.classList.add('is-active');
-  document.getElementById('modal-content').innerText = `Question: ${question}\nAnswer: ${answer}`;
-}
+document.addEventListener('DOMContentLoaded', function() {
+  const categorySelect = document.getElementById('category-select');
+  const startQuizButton = document.getElementById('start-quiz-button');
+  const quizContainer = document.getElementById('quiz-container');
+  const showAnswerButton = document.getElementById('show-answer-button');
+  const nextButton = document.getElementById('next-button');
 
+  let questions = [];
+  let currentQuestionIndex = 0;
 
-document.addEventListener("DOMContentLoaded", function() {
-
-  
-
+  function fetchCategories() {
     fetch('https://opentdb.com/api_category.php')
       .then(response => response.json())
       .then(data => {
-        const categorySelect = document.getElementById('category-select');
-        data.trivia_categories.forEach(category => {
-          const option = document.createElement('option');
-          option.value = category.id;
-          option.textContent = category.name;
-          categorySelect.appendChild(option);
-        });
+        if (data && data.trivia_categories) {
+          data.trivia_categories.forEach(category => {
+            const option = document.createElement('option');
+            option.value = category.id;
+            option.textContent = category.name;
+            categorySelect.appendChild(option);
+          });
+        }
+      })
+      .catch(error => {
+        console.error('Error fetching categories:', error);
       });
-  
-    document.getElementById('search-button').addEventListener('click', () => {
-      const categoryId = document.getElementById('category-select').value;
-      localStorage.setItem('lastSelectedCategory', categoryId);
-      fetchTriviaQuestions(categoryId);
-    });
-  
-    function fetchTriviaQuestions(categoryId) {
-      console.log(`Fetching trivia questions for category ID: ${categoryId}`); // Debugging log
-      fetch(`https://opentdb.com/api.php?amount=5&category=${categoryId}`)
-        .then(response => response.json())
-        .then(data => displayTriviaQuestions(data.results))
-        .catch(error => console.error('Error fetching trivia questions:', error));
+  }
+
+  function fetchQuestions(category, retries = 5) {
+    const url = category === 'any' 
+      ? 'https://opentdb.com/api.php?amount=10' 
+      : `https://opentdb.com/api.php?amount=10&category=${category}`;
+
+    fetch(url)
+      .then(response => {
+        if (response.status === 429 && retries > 0) {
+          console.warn('Rate limited, retrying...');
+          setTimeout(() => fetchQuestions(category, retries - 1), 2000);
+        } else if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        } else {
+          return response.json();
+        }
+      })
+      .then(data => {
+        if (data && data.results) {
+          questions = data.results;
+          displayQuestion();
+        } else {
+          console.error('No data received');
+        }
+      })
+      .catch(error => {
+        console.error('Error fetching questions:', error);
+      });
+  }
+
+  function displayQuestion() {
+    if (currentQuestionIndex < questions.length) {
+      const question = questions[currentQuestionIndex];
+      quizContainer.innerHTML = `
+        <h2 class="title">${question.question}</h2>
+        ${getAnswersHtml(question)}
+        <div id="correct-answer" class="notification is-success is-hidden">${question.correct_answer}</div>
+      `;
+      showAnswerButton.disabled = false;
+      quizContainer.classList.remove('is-hidden');
+      showAnswerButton.classList.remove('is-hidden');
+      nextButton.classList.remove('is-hidden');
+    } else {
+      quizContainer.innerHTML = '<h2 class="title">Quiz Completed!</h2>';
+      showAnswerButton.disabled = true;
+      nextButton.disabled = true;
     }
-  
-    function displayTriviaQuestions(questions) {
-      const triviaResult = document.getElementById('trivia-result');
-      triviaResult.innerHTML = questions.map((question, index) => `
-        <div>
-          <p><strong>Question ${index + 1}:</strong> ${question.question}</p>
-          <p><strong>Answer:</strong> ${question.correct_answer}</p>
-          <button class="button is-info" onclick="showModal('${question.question}', '${question.correct_answer}')">More Info</button>
-        </div>
+  }
+
+  function getAnswersHtml(question) {
+    if (question.type === 'multiple') {
+      let answers = [...question.incorrect_answers];
+      answers.splice(Math.floor(Math.random() * (answers.length + 1)), 0, question.correct_answer);
+      return answers.map(answer => `
+        <label class="radio">
+          <input type="radio" name="answer" value="${answer}">
+          ${answer}
+        </label>
       `).join('');
+    } else if (question.type === 'boolean') {
+      return `
+        <label class="radio">
+          <input type="radio" name="answer" value="True">
+          True
+        </label>
+        <label class="radio">
+          <input type="radio" name="answer" value="False">
+          False
+        </label>
+      `;
     }
-  
-    
-  
-    function closeModal() {
-      const modal = document.getElementById('trivia-modal');
-      modal.classList.remove('is-active');
+  }
+
+  function handleShowAnswerButton() {
+    const correctAnswerDiv = document.getElementById('correct-answer');
+    correctAnswerDiv.classList.remove('is-hidden');
+  }
+
+  function handleNextButton() {
+    const selectedAnswer = document.querySelector('input[name="answer"]:checked');
+    if (!selectedAnswer) {
+      alert('Please select an answer!');
+      return;
     }
-  
-    document.getElementById('modal-close').addEventListener('click', closeModal);
-    document.getElementById('modal-background').addEventListener('click', closeModal);
-  });
-  
+
+    currentQuestionIndex++;
+    displayQuestion();
+  }
+
+  function handleStartQuizButton() {
+    const selectedCategory = categorySelect.value;
+    currentQuestionIndex = 0;
+    fetchQuestions(selectedCategory);
+  }
+
+  showAnswerButton.addEventListener('click', handleShowAnswerButton);
+  nextButton.addEventListener('click', handleNextButton);
+  startQuizButton.addEventListener('click', handleStartQuizButton);
+
+  fetchCategories();
+});

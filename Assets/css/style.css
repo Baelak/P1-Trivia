@@ -1,18 +1,11 @@
-/* Embedded custom styles */
 body {
-    font-family: 'Arial', sans-serif;
-  }
-  
-  .section {
-    padding-top: 2rem;
-  }
-  
-  .modal-content {
-    max-width: 600px;
-    margin: auto;
-  }
-  
-  button {
-    margin-top: 1rem;
-  }
-  
+  font-family: 'Open Sans', sans-serif;
+}
+
+#quiz-container {
+  margin-bottom: 20px;
+}
+
+.is-hidden {
+  display: none;
+}
