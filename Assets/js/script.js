@@ -4,10 +4,8 @@ document.addEventListener('DOMContentLoaded', function() {
   const quizContainer = document.getElementById('quiz-container');
   const showAnswerButton = document.getElementById('show-answer-button');
   const nextButton = document.getElementById('next-button');
-
   let questions = [];
   let currentQuestionIndex = 0;
-
   function fetchCategories() {
     fetch('https://opentdb.com/api_category.php')
       .then(response => response.json())
@@ -25,12 +23,10 @@ document.addEventListener('DOMContentLoaded', function() {
         console.error('Error fetching categories:', error);
       });
   }
-
   function fetchQuestions(category, retries = 5) {
     const url = category === 'any' 
       ? 'https://opentdb.com/api.php?amount=10' 
       : `https://opentdb.com/api.php?amount=10&category=${category}`;
-
     fetch(url)
       .then(response => {
         if (response.status === 429 && retries > 0) {
@@ -54,7 +50,6 @@ document.addEventListener('DOMContentLoaded', function() {
         console.error('Error fetching questions:', error);
       });
   }
-
   function displayQuestion() {
     if (currentQuestionIndex < questions.length) {
       const question = questions[currentQuestionIndex];
@@ -72,9 +67,7 @@ document.addEventListener('DOMContentLoaded', function() {
       showAnswerButton.disabled = true;
       nextButton.disabled = true;
     }
-<<<<<<< HEAD
   }
-
   function getAnswersHtml(question) {
     if (question.type === 'multiple') {
       let answers = [...question.incorrect_answers];
@@ -96,52 +89,28 @@ document.addEventListener('DOMContentLoaded', function() {
           False
         </label>
       `;
-=======
-  
-    function displayTriviaQuestions(questions) {
-      const triviaResult = document.getElementById('trivia-result');
-      questions.forEach((question, index) => {
-        triviaResult.innerHTML += `<div><p><strong>Question ${index + 1}:</strong> ${question.question}</p>`;
-
-          question.incorrect_answers.forEach(function(wrongAnswer){
-            triviaResult.innerHTML += `<div><label>${wrongAnswer}</label><input type="radio" name="answers" value="${wrongAnswer}" /></div>`;
-          });
-
-          triviaResult.innerHTML += `<div><label>${question.correct_answer}</label><input type="radio" name="answers" value="${question.correct_answer}" /></div>`;
-
-          //<p><strong>Answer:</strong> ${question.correct_answer}</p>
-          triviaResult.innerHTML += `<button class="button is-info" onclick="showModal('${question.question}', '${question.correct_answer}')">More Info</button>
-        </div>`});
-
->>>>>>> fde62017b1f22b35a1f2b04a3790c017474d21cf
     }
   }
-
   function handleShowAnswerButton() {
     const correctAnswerDiv = document.getElementById('correct-answer');
     correctAnswerDiv.classList.remove('is-hidden');
   }
-
   function handleNextButton() {
     const selectedAnswer = document.querySelector('input[name="answer"]:checked');
     if (!selectedAnswer) {
       alert('Please select an answer!');
       return;
     }
-
     currentQuestionIndex++;
     displayQuestion();
   }
-
   function handleStartQuizButton() {
     const selectedCategory = categorySelect.value;
     currentQuestionIndex = 0;
     fetchQuestions(selectedCategory);
   }
-
   showAnswerButton.addEventListener('click', handleShowAnswerButton);
   nextButton.addEventListener('click', handleNextButton);
   startQuizButton.addEventListener('click', handleStartQuizButton);
-
   fetchCategories();
 });

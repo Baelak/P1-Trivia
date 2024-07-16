@@ -1,11 +1,9 @@
 body {
   font-family: 'Open Sans', sans-serif;
 }
-
 #quiz-container {
   margin-bottom: 20px;
 }
-
 .is-hidden {
   display: none;
 }
