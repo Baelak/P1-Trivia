@@ -4,8 +4,45 @@ document.addEventListener('DOMContentLoaded', function() {
   const quizContainer = document.getElementById('quiz-container');
   const showAnswerButton = document.getElementById('show-answer-button');
   const nextButton = document.getElementById('next-button');
+  const endGameButton = document.getElementById('end-game-button');
+  const triviaModal = document.getElementById('trivia-modal');
+  const closeModalButton = document.getElementById('close-modal-button');
+  const playGameButton = document.getElementById('play-game-button');
+  const cancelButton = document.getElementById('cancel-button');
+  const highScoreModal = document.getElementById('high-score-modal');
+  const closeHighScoreModalButton = document.getElementById('close-high-score-modal-button');
+  const highScoreMessage = document.getElementById('high-score-message');
+  const closeHighScoreButton = document.getElementById('close-high-score-button');
+
   let questions = [];
   let currentQuestionIndex = 0;
+  let currentScore = 0;
+
+  // Show the modal on page load
+  triviaModal.classList.add('is-active');
+
+  // Event listeners for modal buttons
+  closeModalButton.addEventListener('click', () => {
+    triviaModal.classList.remove('is-active');
+  });
+
+  playGameButton.addEventListener('click', () => {
+    triviaModal.classList.remove('is-active');
+    handleStartQuizButton();
+  });
+
+  cancelButton.addEventListener('click', () => {
+    triviaModal.classList.remove('is-active');
+  });
+
+  closeHighScoreModalButton.addEventListener('click', () => {
+    highScoreModal.classList.remove('is-active');
+  });
+
+  closeHighScoreButton.addEventListener('click', () => {
+    highScoreModal.classList.remove('is-active');
+  });
+
   function fetchCategories() {
     fetch('https://opentdb.com/api_category.php')
       .then(response => response.json())
@@ -23,6 +60,7 @@ document.addEventListener('DOMContentLoaded', function() {
         console.error('Error fetching categories:', error);
       });
   }
+
   function fetchQuestions(category, retries = 5) {
     const url = category === 'any' 
       ? 'https://opentdb.com/api.php?amount=10' 
@@ -50,6 +88,7 @@ document.addEventListener('DOMContentLoaded', function() {
         console.error('Error fetching questions:', error);
       });
   }
+
   function displayQuestion() {
     if (currentQuestionIndex < questions.length) {
       const question = questions[currentQuestionIndex];
@@ -62,12 +101,12 @@ document.addEventListener('DOMContentLoaded', function() {
       quizContainer.classList.remove('is-hidden');
       showAnswerButton.classList.remove('is-hidden');
       nextButton.classList.remove('is-hidden');
+      endGameButton.classList.remove('is-hidden');
     } else {
-      quizContainer.innerHTML = '<h2 class="title">Quiz Completed!</h2>';
-      showAnswerButton.disabled = true;
-      nextButton.disabled = true;
+      endGame();
     }
   }
+
   function getAnswersHtml(question) {
     if (question.type === 'multiple') {
       let answers = [...question.incorrect_answers];
@@ -91,10 +130,16 @@ document.addEventListener('DOMContentLoaded', function() {
       `;
     }
   }
+
   function handleShowAnswerButton() {
     const correctAnswerDiv = document.getElementById('correct-answer');
     correctAnswerDiv.classList.remove('is-hidden');
+    const selectedAnswer = document.querySelector('input[name="answer"]:checked');
+    if (selectedAnswer && selectedAnswer.value === correctAnswerDiv.textContent) {
+      currentScore++;
+    }
   }
+
   function handleNextButton() {
     const selectedAnswer = document.querySelector('input[name="answer"]:checked');
     if (!selectedAnswer) {
@@ -104,13 +149,37 @@ document.addEventListener('DOMContentLoaded', function() {
     currentQuestionIndex++;
     displayQuestion();
   }
+
   function handleStartQuizButton() {
     const selectedCategory = categorySelect.value;
     currentQuestionIndex = 0;
+    currentScore = 0;
     fetchQuestions(selectedCategory);
   }
+
+  function handleEndGameButton() {
+    endGame();
+  }
+
+  function endGame() {
+    saveHighScore(currentScore);
+    highScoreMessage.textContent = `Your score: ${currentScore}. High score: ${localStorage.getItem('highScore') || 0}`;
+    highScoreModal.classList.add('is-active');
+    showAnswerButton.classList.add('is-hidden');
+    nextButton.classList.add('is-hidden');
+    endGameButton.classList.add('is-hidden');
+  }
+
+  function saveHighScore(score) {
+    const highScore = localStorage.getItem('highScore');
+    if (!highScore || score > highScore) {
+      localStorage.setItem('highScore', score);
+    }
+  }
+
   showAnswerButton.addEventListener('click', handleShowAnswerButton);
   nextButton.addEventListener('click', handleNextButton);
   startQuizButton.addEventListener('click', handleStartQuizButton);
+  endGameButton.addEventListener('click', handleEndGameButton);
   fetchCategories();
 });

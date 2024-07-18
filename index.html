@@ -32,8 +32,45 @@
       <div id="quiz-container" class="content is-hidden"></div>
       <button id="show-answer-button" class="button is-info is-hidden">Show Answer</button>
       <button id="next-button" class="button is-primary is-hidden">Next Question</button>
+      <button id="end-game-button" class="button is-danger is-hidden">End Game</button>
     </div>
   </section>
+
+  <!-- Modal for starting the game -->
+  <div class="modal" id="trivia-modal">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+      <header class="modal-card-head">
+        <p class="modal-card-title">Play Trivia Game</p>
+        <button class="delete" aria-label="close" id="close-modal-button"></button>
+      </header>
+      <section class="modal-card-body">
+        <p>Would you like to play a game? 🚲</p>
+      </section>
+      <footer class="modal-card-foot">
+        <button class="button is-success" id="play-game-button">Play</button>
+        <button class="button" id="cancel-button">Cancel</button>
+      </footer>
+    </div>
+  </div>
+
+  <!-- Modal for showing high score -->
+  <div class="modal" id="high-score-modal">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+      <header class="modal-card-head">
+        <p class="modal-card-title">High Score</p>
+        <button class="delete" aria-label="close" id="close-high-score-modal-button"></button>
+      </header>
+      <section class="modal-card-body">
+        <p id="high-score-message"></p>
+      </section>
+      <footer class="modal-card-foot">
+        <button class="button" id="close-high-score-button">Close</button>
+      </footer>
+    </div>
+  </div>
+
   <script src="./Assets/js/script.js"></script>
 </body>
 </html>
