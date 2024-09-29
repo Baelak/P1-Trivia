@@ -1,4 +1,5 @@
 Hosted URL Link: https://baelak.github.io/P1-Trivia/
+Hosted REPO Link: https://github.com/Baelak/P1-Trivia
 
 # Project 1: Interactive Front-End Application
 
